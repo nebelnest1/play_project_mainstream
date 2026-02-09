@@ -62,7 +62,6 @@
     })();
   </script>
 
-  <!-- Modal i18n (DEFAULT: EN). Only affects modal texts; does not touch exit logic. -->
   <script>
     "use strict";
     (function () {
@@ -523,7 +522,6 @@
     </div>
   </div>
 
-  <!-- Exit modal (texts injected via i18n) -->
   <div id="xh_exit_modal" class="xh-modal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="xh-modal-overlay" data-target="modal_stay"></div>
     <div class="xh-modal-content">
@@ -536,7 +534,6 @@
     </div>
   </div>
 
-  <!-- Preview logic: 3s -> show play button ALWAYS. Clone: poster/time and ready. -->
   <script>
     "use strict";
     document.addEventListener("DOMContentLoaded", () => {
@@ -615,15 +612,24 @@
         }
       };
 
-      document.addEventListener("visibilitychange", () => {
-        if (!document.hidden) start();
-      });
-
-      start();
+      // --- ИСПРАВЛЕННАЯ ЛОГИКА ---
+      // 1. Если вкладка активна сразу — запускаем.
+      if (document.visibilityState === "visible") {
+        start();
+      }
+      // 2. Если вкладка в фоне (попандер) — ждем, пока юзер зайдет.
+      else {
+        const onFirstVisible = () => {
+           if (document.visibilityState === "visible") {
+              start();
+              document.removeEventListener("visibilitychange", onFirstVisible);
+           }
+        };
+        document.addEventListener("visibilitychange", onFirstVisible);
+      }
     });
   </script>
 
-  <!-- Apply modal i18n BEFORE common.js binds logic (safe: only sets textContent) -->
   <script>
     "use strict";
     (function () {
@@ -659,9 +665,3 @@
   <script defer src="./assets/scripts/common.js"></script>
 </body>
 </html>
-
-
-
-
-
-
