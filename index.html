@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
-  <link rel="preload" href="./assets/poster-3s.webp?v=1" as="image" />
+  <link rel="preload" href="./assets/poster-3s.webp" as="image" />
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <title>EARLY ACCESS | Private Premiere: All Episodes Online 🎬</title>
@@ -474,7 +474,7 @@
              playsinline
              muted
              preload="auto"
-             poster="./assets/poster-3s.webp?v=1">
+             poster="./assets/poster-3s.webp">
         <source src="./vid.mp4" type="video/mp4" />
       </video>
 
@@ -548,7 +548,7 @@
       const STOP_AT = 3.0;
 
       const startTime = parseFloat(sp.get("t")) || 0;
-      const POSTER = sp.get("__poster") || video.getAttribute("poster") || "./assets/poster-3s.webp?v=1";
+      const POSTER = sp.get("__poster") || video.getAttribute("poster") || "./assets/poster-3s.webp";
 
       // Clone mode: no preview playback, just restore state and show button
       if (sp.get("__cl") === "1" || sp.get("__skipPreview") === "1") {
@@ -659,6 +659,7 @@
   <script defer src="./assets/scripts/common.js"></script>
 </body>
 </html>
+
 
 
 
