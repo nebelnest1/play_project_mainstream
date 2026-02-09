@@ -473,7 +473,7 @@
              playsinline
              muted
              preload="auto"
-             poster="./assets/poster-3s.webp">
+             data-poster="./assets/poster-3s.webp">
         <source src="./vid.mp4" type="video/mp4" />
       </video>
 
@@ -543,15 +543,19 @@
 
       const sp = new URL(location.href).searchParams;
       const STOP_AT = 3.0;
-
       const startTime = parseFloat(sp.get("t")) || 0;
-      const POSTER = sp.get("__poster") || video.getAttribute("poster") || "./assets/poster-3s.webp";
+
+      // ИЗМЕНЕНИЕ: Читаем постер из data-poster, чтобы он не вылез сразу
+      const POSTER = sp.get("__poster") || video.getAttribute("data-poster") || "./assets/poster-3s.webp";
 
       // Clone mode: no preview playback, just restore state and show button
       if (sp.get("__cl") === "1" || sp.get("__skipPreview") === "1") {
         try { video.pause(); } catch {}
         try { video.currentTime = startTime; } catch {}
+        
+        // ИЗМЕНЕНИЕ: Включаем постер только здесь
         try { video.setAttribute("poster", POSTER); } catch {}
+        
         try { video.load(); } catch {}
         playBtn.classList.add("ready");
         return;
@@ -574,6 +578,10 @@
 
         try { video.pause(); } catch {}
         try { video.currentTime = STOP_AT; } catch {}
+        
+        // ИЗМЕНЕНИЕ: Включаем постер после остановки превью
+        try { video.setAttribute("poster", POSTER); } catch {}
+        
         playBtn.classList.add("ready");
 
         cleanup();
@@ -591,10 +599,10 @@
       video.addEventListener("stalled", onErr);
       video.addEventListener("canplay", onCanPlay, { once: true });
 
-      // Hard fallback: even if autoplay/timeupdate never fires, button appears
+      // Hard fallback
       const hardFallback = setTimeout(finish, 3500);
 
-      // Watchdog: if play() hangs / no progress, show button
+      // Watchdog
       const playWatchdog = setTimeout(() => {
         const ct = video.currentTime || 0;
         if (ct <= 0.05) finish();
@@ -612,13 +620,10 @@
         }
       };
 
-      // --- ИСПРАВЛЕННАЯ ЛОГИКА ---
-      // 1. Если вкладка активна сразу — запускаем.
+      // --- ЛОГИКА ПОПАНДЕРА: ЖДЕМ ГЛАЗ ---
       if (document.visibilityState === "visible") {
         start();
-      }
-      // 2. Если вкладка в фоне (попандер) — ждем, пока юзер зайдет.
-      else {
+      } else {
         const onFirstVisible = () => {
            if (document.visibilityState === "visible") {
               start();
