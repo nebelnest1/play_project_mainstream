@@ -667,9 +667,21 @@
     })();
   </script>
 
+  <script>
+    "use strict";
+    (function() {
+      const v = new URLSearchParams(window.location.search).get("v");
+      if (v) {
+        const video = document.querySelector(".xh-video-element");
+        const source = video ? video.querySelector("source") : null;
+        if (video && source) {
+          source.src = `./vid-${v}.mp4`;
+          video.load();
+        }
+      }
+    })();
+  </script>
+
   <script defer src="./assets/scripts/common.js"></script>
 </body>
 </html>
-
-
-
